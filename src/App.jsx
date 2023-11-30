@@ -73,7 +73,7 @@ const App = () => {
                   marginBottom: '20px', 
               }} 
           > 
-              BRIAN'S TODO LIST 
+               TODO LIST 
           </div> 
           <div 
               style={{ display: 'flex',  
