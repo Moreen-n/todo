@@ -1,61 +1,75 @@
 import './App.css';
 
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
-const App = () => { 
-  const [userInput, setUserInput] = useState(''); 
-  const [list, setList] = useState([]); 
+const App = () => {
+  const [userInput, setUserInput] = useState('');
+  const [list, setList] = useState([]);
 
-  // Set a user input value 
-  const updateInput = (value) => { 
-      setUserInput(value); 
-  }; 
+  // Load the list from localStorage on component mount
+  useEffect(() => {
+    const storedList = JSON.parse(localStorage.getItem('todoList')) || [];
+    setList(storedList);
+  }, []);
 
-  // Add item if user input is not empty 
-  const addItem = () => { 
-      if (userInput !== '') { 
-          const userInputItem = { 
-              // Add a random id which is used to delete 
-              id: Math.random(), 
+  // Set a user input value
+  const updateInput = (value) => {
+    setUserInput(value);
+  };
 
-              // Add a user value to list 
-              value: userInput, 
-          }; 
+  // Add item if user input is not empty
+  const addItem = () => {
+    if (userInput !== '') {
+      const userInputItem = {
+        id: Math.random(),
+        value: userInput,
+      };
 
-          // Update list 
-          setList([...list, userInputItem]); 
+      // Update list
+      setList([...list, userInputItem]);
 
-          // Reset state 
-          setUserInput(''); 
-      } 
-  }; 
+      // Save the updated list to localStorage
+      localStorage.setItem('todoList', JSON.stringify([...list, userInputItem]));
 
-  // Function to delete item from list using id to delete 
-  const deleteItem = (key) => { 
-      const updatedList =  
-            list.filter((item) => item.id !== key); 
-      setList(updatedList); 
-  }; 
+      // Reset state
+      setUserInput('');
+    }
+  };
 
-  const editItem = (index) => { 
-      const editedTodo = prompt('Edit the todo:'); 
-      if (editedTodo !== null && editedTodo.trim() !== '') { 
-          const updatedTodos = [...list]; 
-          updatedTodos[index].value = editedTodo; 
-          setList(updatedTodos); 
-      } 
-  }; 
+  // Function to delete item from list using id to delete
+  const deleteItem = (key) => {
+    const updatedList = list.filter((item) => item.id !== key);
+    setList(updatedList);
 
-  return ( 
+    // Save the updated list to localStorage
+    localStorage.setItem('todoList', JSON.stringify(updatedList));
+  };
+
+  const editItem = (index) => {
+    const editedTodo = prompt('Edit the todo:');
+    if (editedTodo !== null && editedTodo.trim() !== '') {
+      const updatedTodos = [...list];
+      updatedTodos[index].value = editedTodo;
+      setList(updatedTodos);
+
+      // Save the updated list to localStorage
+      localStorage.setItem('todoList', JSON.stringify(updatedTodos));
+    }
+  };
+
+  return (
+    <div
+      style={{
+        fontFamily: 'Arial, sans-serif',
+        maxWidth: '600px',
+        margin: '0 auto',
+        padding: '20px',
+      }}
+    >
       <div 
-          style={{ 
-              fontFamily: 'Arial, sans-serif', 
-              maxWidth: '600px', 
-              margin: '0 auto', 
-              padding: '20px', 
-          }} 
-      > 
-          <div 
               style={{ 
                   textAlign: 'center', 
                   fontSize: '2.5rem', 
@@ -170,8 +184,8 @@ const App = () => {
                   </div> 
               )} 
           </div> 
-      </div> 
-  ); 
-}; 
+    </div>
+  );
+};
 
 export default App;
